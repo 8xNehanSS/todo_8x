@@ -1,0 +1,22 @@
+.addtask-input {
+  width: 90%;
+  padding: 10px;
+  border: 1px solid #686d76;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.addtask-main {
+  margin-bottom: 20px;
+}
+
+button {
+  padding: 9px;
+  background-color: #dc5f00;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
