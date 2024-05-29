@@ -1,6 +1,6 @@
 import "./App.css";
 import AddTask from "./components/AddTask/addtask";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TaskCard from "./components/TaskCard/taskcard";
 
 class Task {
@@ -15,9 +15,10 @@ class Task {
 function App(props) {
   const userID = props.userID;
   const setLogin = props.setLogin;
-  const userTasks = props.db[userID].map(
-    (task, index) => new Task(index, task)
-  );
+
+  useEffect(() => {}, []);
+
+  const userTasks = [];
 
   const [newTask, setNewTask] = useState("");
   const [tasks, setTasks] = useState(userTasks);

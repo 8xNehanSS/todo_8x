@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import "./login.css";
 
-function Login({ setLogin, setUserID, db }) {
+function Login({ setLogin, setUserID }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const handleUsername = (e) => {
@@ -12,16 +12,27 @@ function Login({ setLogin, setUserID, db }) {
     setPassword(e.target.value);
   };
 
-  const checkLogin = () => {
-    for (const key in db) {
-      console.log(key);
-      console.log(db[key]);
-      if (key === username && db[key] === password) {
+  const checkLogin = async () => {
+    try {
+      // Make a fetch request to the server
+      const response = await fetch("http://localhost:5000/todo8x/getuser", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (response.status === 400) {
+        alert("Invalid username or password");
+      } else {
+        const data = await response.json();
+        localStorage.setItem("token", data.token);
         accessLogin();
-        return;
       }
+    } catch (error) {
+      console.log(error);
     }
-    alert("Invalid username or password");
   };
 
   const accessLogin = () => {

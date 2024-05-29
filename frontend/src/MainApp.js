@@ -6,12 +6,21 @@ import App from "./App";
 function MainApp() {
   const [login, setLogin] = useState(false);
   const [userID, setUserID] = useState("");
+
+  useEffect(() => {
+    const user = localStorage.getItem("token");
+    if (user) {
+      setLogin(true);
+      setUserID(userID);
+    }
+  }, []);
+
   return (
     <>
       {login ? (
-        <App userID={userID} setLogin={setLogin} db={tasks} />
+        <App userID={userID} setLogin={setLogin} />
       ) : (
-        <Login setLogin={setLogin} setUserID={setUserID} db={users} />
+        <Login setLogin={setLogin} setUserID={setUserID} />
       )}
     </>
   );
