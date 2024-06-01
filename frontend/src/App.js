@@ -30,6 +30,7 @@ function MainApp() {
   }, []);
 
   const accessLogin = (userID) => {
+    console.log(userID);
     setLogin(true);
     setUserID(userID);
   };

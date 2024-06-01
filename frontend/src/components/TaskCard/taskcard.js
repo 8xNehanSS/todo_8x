@@ -3,7 +3,8 @@ import "./taskcard.css";
 function TaskCard(props) {
   const id = props.id;
   const task = props.task;
-  const date = props.date;
+  let date = props.date;
+  date = new Date(date);
   const isDone = props.isDone;
   const setDone = props.setDone;
 

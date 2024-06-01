@@ -2,6 +2,9 @@ import "./ToDo8x.css";
 import AddTask from "./components/AddTask/addtask";
 import { useEffect, useState } from "react";
 import TaskCard from "./components/TaskCard/taskcard";
+import getUserTasks from "./helpers/GetUserTasks";
+import AddUserTask from "./helpers/AddUserTask";
+import setDone from "./helpers/SetDone";
 
 class Task {
   constructor(id, description) {
@@ -12,33 +15,28 @@ class Task {
   }
 }
 
-function App(props) {
-  const userID = props.userID;
-  const setLogin = props.setLogin;
-
-  const userTasks = [];
-
+function App({ userID, setLogin }) {
   const [newTask, setNewTask] = useState("");
-  const [tasks, setTasks] = useState(userTasks);
+  const [tasks, setTasks] = useState([]);
+  const [temp, setTemp] = useState(1);
 
   const handleAddTask = () => {
     if (newTask.replaceAll(" ", "") === "") {
       return;
     }
-    const taskcount = tasks.length;
-    const task = new Task(taskcount, newTask);
-    setTasks([...tasks, task]);
+    AddUserTask(userID, newTask, new Date());
+    getUserTasks(userID, setTasks);
+    setTemp(temp + 1);
     setNewTask("");
   };
 
-  const setDone = (id) => {
-    const newTasks = tasks.map((task) => {
-      if (task.id === id) {
-        task.isDone = !task.isDone;
-      }
-      return task;
-    });
-    setTasks(newTasks);
+  useEffect(() => {
+    getUserTasks(userID, setTasks);
+  }, []);
+
+  const DoneTask = async (id) => {
+    await setDone(userID, id);
+    getUserTasks(userID, setTasks);
   };
 
   return (
@@ -55,13 +53,15 @@ function App(props) {
         </div>
         <div className="app-tasks">
           {tasks.map((task, index) => (
-            <div key={index} className="task">
+            <div key={task._id.toString()} className="task">
               <TaskCard
-                id={task.id}
-                task={task.description}
+                key={task._id.toString()}
+                id={task._id.toString()}
+                task={task.taskDesc}
                 date={task.dueDate}
                 isDone={task.isDone}
-                setDone={setDone}
+                addedOn={task.addedOn}
+                setDone={DoneTask}
               />
             </div>
           ))}

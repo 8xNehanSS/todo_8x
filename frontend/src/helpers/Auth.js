@@ -10,6 +10,7 @@ const Authentication = async (token, accessLogin) => {
     if (response.status === 200) {
       const data = await response.json();
       console.log(data);
+      console.log(data.user.username);
       accessLogin(data.user.username);
     }
   } catch (error) {
