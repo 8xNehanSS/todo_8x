@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import "./login.css";
+import LoginClient from "../../helpers/LoginClient";
 
-function Login({ setLogin, setUserID }) {
+function Login({ setLogin, setUserID, setNewUser }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const handleUsername = (e) => {
@@ -12,33 +13,19 @@ function Login({ setLogin, setUserID }) {
     setPassword(e.target.value);
   };
 
-  const checkLogin = async () => {
-    try {
-      // Make a fetch request to the server
-      const response = await fetch("http://localhost:5000/todo8x/getuser", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
-      });
-
-      if (response.status === 400) {
-        alert("Invalid username or password");
-      } else {
-        const data = await response.json();
-        localStorage.setItem("token", data.token);
-        accessLogin();
-      }
-    } catch (error) {
-      console.log(error);
-    }
+  const checkLogin = () => {
+    LoginClient(username, password, accessLogin);
   };
 
   const accessLogin = () => {
     setLogin(true);
     setUserID(username);
   };
+
+  const newUser = () => {
+    setNewUser(true);
+  };
+
   return (
     <div className="login-container">
       <h1 className="login-title">Todo_8x Sign In</h1>
@@ -59,6 +46,9 @@ function Login({ setLogin, setUserID }) {
         />
         <button className="login-button" onClick={checkLogin}>
           Sign In
+        </button>
+        <button className="login-button" onClick={newUser}>
+          Register
         </button>
       </div>
     </div>

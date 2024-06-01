@@ -1,79 +1,68 @@
-import "./App.css";
-import AddTask from "./components/AddTask/addtask";
-import { useEffect, useState } from "react";
-import TaskCard from "./components/TaskCard/taskcard";
+import React from "react";
+import { useState, useEffect } from "react";
+import Login from "./components/Login/login";
+import App from "./ToDo8x";
+import Auth from "./helpers/Auth";
+import Loader from "./helpers/loader/Loader";
+import Register from "./components/Register/register";
 
-class Task {
-  constructor(id, description) {
-    this.id = id;
-    this.description = description;
-    this.dueDate = new Date();
-    this.isDone = false;
-  }
-}
+function MainApp() {
+  const [login, setLogin] = useState(false);
+  const [userID, setUserID] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [newUser, setNewUser] = useState(false);
 
-function App(props) {
-  const userID = props.userID;
-  const setLogin = props.setLogin;
-
-  useEffect(() => {}, []);
-
-  const userTasks = [];
-
-  const [newTask, setNewTask] = useState("");
-  const [tasks, setTasks] = useState(userTasks);
-
-  const handleAddTask = () => {
-    if (newTask.replaceAll(" ", "") === "") {
+  useEffect(() => {
+    const user = localStorage.getItem("token");
+    if (!user) {
+      setTimeout(() => {
+        setLoading(false);
+      }, 2000);
       return;
     }
-    const taskcount = tasks.length;
-    const task = new Task(taskcount, newTask);
-    setTasks([...tasks, task]);
-    setNewTask("");
+    function checkLogin() {
+      Auth(user, accessLogin);
+    }
+    checkLogin();
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+  }, []);
+
+  const accessLogin = (userID) => {
+    setLogin(true);
+    setUserID(userID);
   };
 
-  const setDone = (id) => {
-    const newTasks = tasks.map((task) => {
-      if (task.id === id) {
-        task.isDone = !task.isDone;
-      }
-      return task;
-    });
-    setTasks(newTasks);
-  };
+  function logout() {
+    setLogin(false);
+    setUserID("");
+    localStorage.removeItem("token");
+  }
 
-  return (
-    <div className="App">
-      <div>
-        <div className="app-fixed">
-          <code className="todo-heading">todo_8x</code>
-          <p>Welcome {userID}</p>
-          <AddTask
-            newTask={newTask}
-            setNewTask={setNewTask}
-            handleAddTask={handleAddTask}
-          />
-        </div>
-        <div className="app-tasks">
-          {tasks.map((task, index) => (
-            <div key={index} className="task">
-              <TaskCard
-                id={task.id}
-                task={task.description}
-                date={task.dueDate}
-                isDone={task.isDone}
-                setDone={setDone}
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-      <button className="app-logout" onClick={() => setLogin(false)}>
-        Logout
-      </button>
-    </div>
-  );
+  function Application() {
+    if (login) {
+      return <App userID={userID} setLogin={logout} />;
+    } else if (!newUser) {
+      return (
+        <Login
+          setLogin={setLogin}
+          setUserID={setUserID}
+          setNewUser={setNewUser}
+        />
+      );
+    } else {
+      return (
+        <Register
+          setLogin={setLogin}
+          setUserID={setUserID}
+          setNewUser={setNewUser}
+        />
+      );
+    }
+  }
+
+  return <>{loading ? <Loader /> : <div>{Application()}</div>}</>;
 }
 
-export default App;
+export default MainApp;

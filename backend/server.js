@@ -1,16 +1,15 @@
+//imports
+const authenticateJWT = require("./middleware/authentication.js");
+const registerUser = require("./routes/registerUser.js");
+const loginUser = require("./routes/loginUser.js");
+
 const express = require("express");
+const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const cors = require("cors");
 require("dotenv").config();
-const jwt = require("jsonwebtoken");
-const User = require("./Models/User");
 
-const app = express();
-const port = process.env.PORT || 5000;
-
-app.use(cors());
-app.use(express.json());
-
+//connect to db
 mongoose
   .connect(process.env.mongoDB_URI, {
     useNewUrlParser: true,
@@ -23,46 +22,24 @@ mongoose
     console.log(err);
   });
 
-app.get("/", async (req, res) => {
-  res.send("Request Recieved");
+const app = express();
+app.use(cors());
+app.use(bodyParser.json());
+
+const PORT = process.env.PORT || 3000;
+
+//routes
+app.post("/register", registerUser);
+app.post("/login", loginUser);
+app.get("/auth", authenticateJWT, (req, res) => {
+  res.json({ user: req.user });
 });
 
-app.post("/todo8x/getuser", async (req, res) => {
-  try {
-    const { username, password } = req.body;
-    const user = await User.findOne({ username });
-    if (!user) {
-      return res.status(400).send("Invalid username or password");
-    }
-    if (password !== user.password) {
-      return res.status(400).send("Invalid username or password");
-    }
-    const token = jwt.sign({ id: user.username }, process.env.JWT_TOKEN_SERVER);
-    res.send({ token });
-  } catch (ex) {
-    console.log(ex);
-    res.status(500).send("Internal Server Error");
-  }
+// Protected route
+app.get("/protected", authenticateJWT, (req, res) => {
+  res.json({ message: "This is a protected route", user: req.user });
 });
 
-app.post("/todo8x/adduser", async (req, res) => {
-  try {
-    const { username, password } = req.body;
-    const user = await User.findOne({ username });
-    if (user) {
-      return res.status(1).send("User already exists");
-    }
-    const newUser = new User({
-      username,
-      password,
-    });
-    await newUser.save();
-  } catch (ex) {
-    console.log(ex);
-    res.status(500).send("Internal Server Error");
-  }
-});
-
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
