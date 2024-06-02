@@ -11,6 +11,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const SetArchive = require("./routes/setArchive.js");
 require("dotenv").config();
 
 //connect to db
@@ -42,6 +43,7 @@ app.get("/tasks/:userid", authenticateJWT, GetUserTasks);
 app.post("/addtask/:userid", authenticateJWT, AddUserTask);
 app.get("/archivedtasks/:userid", authenticateJWT, GetArchivedTasks);
 app.post("/setdone", authenticateJWT, SetTaskDone);
+app.post("/setarchive", authenticateJWT, SetArchive);
 
 // Protected route
 app.get("/protected", authenticateJWT, (req, res) => {

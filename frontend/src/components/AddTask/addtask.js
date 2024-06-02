@@ -2,6 +2,8 @@ import "./addtask.css";
 
 function AddTask(props) {
   const setNewTask = props.setNewTask;
+  const setNewTaskDate = props.setNewTaskDate;
+  const newTaskDate = props.newTaskDate;
   const newTask = props.newTask;
   const handleAddTask = props.handleAddTask;
   const handleTaskChange = (event) => {
@@ -19,7 +21,16 @@ function AddTask(props) {
             onChange={handleTaskChange}
           />
         </div>
-        <button onClick={handleAddTask}>Add Task</button>
+        <div className="addtask-calen-button">
+          <input
+            className="addtask-date"
+            type="date"
+            placeholder="Enter due date"
+            value={newTaskDate}
+            onChange={(event) => setNewTaskDate(event.target.value)}
+          />
+          <button onClick={handleAddTask}>Add Task</button>
+        </div>
       </div>
       <hr className="hr-addtask" />
     </>
