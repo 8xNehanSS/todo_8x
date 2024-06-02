@@ -41,35 +41,39 @@ function App({ userID, setLogin }) {
 
   return (
     <div className="App">
-      <div>
+      <div className="app-heading">
         <div className="app-fixed">
-          <code className="todo-heading">todo_8x</code>
-          <p>Welcome {userID}</p>
-          <AddTask
-            newTask={newTask}
-            setNewTask={setNewTask}
-            handleAddTask={handleAddTask}
-          />
+          <p className="todo-heading">todo_8x</p>
+          <p className="todo-username">{userID}</p>
         </div>
-        <div className="app-tasks">
-          {tasks.map((task, index) => (
-            <div key={task._id.toString()} className="task">
-              <TaskCard
-                key={task._id.toString()}
-                id={task._id.toString()}
-                task={task.taskDesc}
-                date={task.dueDate}
-                isDone={task.isDone}
-                addedOn={task.addedOn}
-                setDone={DoneTask}
-              />
-            </div>
-          ))}
+        <div className="logout-button">
+          <button className="app-logout" onClick={setLogin}>
+            Logout
+          </button>
         </div>
       </div>
-      <button className="app-logout" onClick={setLogin}>
-        Logout
-      </button>
+      <div className="add-task">
+        <AddTask
+          newTask={newTask}
+          setNewTask={setNewTask}
+          handleAddTask={handleAddTask}
+        />
+      </div>
+      <div className="app-tasks">
+        {tasks.map((task, index) => (
+          <div key={task._id.toString()} className="task">
+            <TaskCard
+              key={task._id.toString()}
+              id={task._id.toString()}
+              task={task.taskDesc}
+              date={task.dueDate}
+              isDone={task.isDone}
+              addedOn={task.addedOn}
+              setDone={DoneTask}
+            />
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
